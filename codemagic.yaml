@@ -1,1 +1,44 @@
-
+workflows:
+  aeropulse-ios-testflight:
+    name: AeroPulse – Chroma Drift iOS TestFlight
+    instance_type: mac_mini_m2
+    max_build_duration: 120
+    integrations:
+      app_store_connect: aeropulse_app_store_connect
+    environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.hredgamesstudio.aeropulse
+      vars:
+        BUNDLE_ID: com.hredgamesstudio.aeropulse
+        XCODE_PROJECT: ios/App/App.xcodeproj
+        XCODE_SCHEME: App
+    scripts:
+      - name: Install dependencies
+        script: npm ci
+      - name: Build web game
+        script: npm run build
+      - name: Sync Capacitor iOS project
+        script: npx cap sync ios
+      - name: Set up signing
+        script: xcode-project use-profiles
+      - name: Build signed IPA
+        script: |
+          xcode-project build-ipa \
+            --project "$XCODE_PROJECT" \
+            --scheme "$XCODE_SCHEME"
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+        beta_groups:
+          - Internal Testers
+      email:
+        recipients:
+          - baranmanduz27@icloud.com
+        notify:
+          success: true
+          failure: true
