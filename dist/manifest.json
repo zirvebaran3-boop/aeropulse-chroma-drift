@@ -1,0 +1,29 @@
+{
+  "name": "AeroPulse: Chroma Drift",
+  "short_name": "AeroPulse",
+  "description": "App Store Ready neon arcade flight game by Hred Games Studio. Features hypersonic flap physics, graze mechanics, procedural synth audio, and zero-tracking privacy.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#050508",
+  "theme_color": "#00f2ff",
+  "categories": ["games", "arcade", "action"],
+  "developer": {
+    "name": "Hred Games Studio",
+    "url": "https://hredgames.dev"
+  },
+  "icons": [
+    {
+      "src": "/aeropulse-app-icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/aeropulse-app-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
