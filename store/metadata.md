@@ -10,8 +10,8 @@ Her alanın yanında App Store Connect'teki karakter sınırı yazıyor.
 | Bundle ID | com.hredgamesstudio.aeropulse |
 | SKU | aeropulse-ios-001 |
 | Birincil dil | Türkçe |
-| Birincil kategori | Oyunlar → Arcade |
-| İkincil kategori | Oyunlar → Aksiyon |
+| Birincil kategori | Oyunlar (alt: Aksiyon, Gündelik) |
+| İkincil kategori | Eğlence |
 | İçerik hakları | Üçüncü taraf içeriği yok |
 | Yaş sınırı | 4+ (anketteki tüm sorulara "Yok / Hayır") |
 | Fiyat | Ücretsiz |
