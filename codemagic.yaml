@@ -16,10 +16,13 @@ workflows:
     scripts:
       - name: Install dependencies
         script: npm ci
-      - name: Build web game
-        script: npm run build
+      # Repoda kaynak kod yok; hazir derlenmis dist/ kullanilir (npm run build burada calismaz)
       - name: Sync Capacitor iOS project
         script: npx cap sync ios
+      - name: Set build number
+        script: |
+          cd ios/App
+          agvtool new-version -all $(date -u +%Y%m%d%H%M)
       - name: Set up signing
         script: xcode-project use-profiles
       - name: Build signed IPA
