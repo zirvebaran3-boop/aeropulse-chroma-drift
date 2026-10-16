@@ -61,7 +61,7 @@ window.AP_SKINS = [
 
   /* kartsiz: logo gizlendigi icin bos kalan sol ust kose; centik/Dynamic Island payi */
   #ap-level{position:fixed;z-index:60;left:max(16px,env(safe-area-inset-left));top:max(16px,env(safe-area-inset-top));pointer-events:none;
-    width:150px;font-family:Rajdhani,system-ui,sans-serif;color:#eef;text-align:left;text-shadow:0 1px 6px #1d1833;transition:opacity .3s}
+    min-width:150px;max-width:60vw;font-family:Rajdhani,system-ui,sans-serif;color:#eef;text-align:left;text-shadow:0 1px 6px #1d1833;transition:opacity .3s}
   #ap-level[hidden]{display:none}
   #ap-level b{font-family:Orbitron,system-ui,sans-serif;font-size:13px;letter-spacing:.14em;color:#9ad8ff}
   #ap-level span{display:block;font-size:12px;color:#c9c2ea;margin-top:1px}
