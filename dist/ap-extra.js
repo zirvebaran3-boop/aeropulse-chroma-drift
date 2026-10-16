@@ -59,8 +59,26 @@ window.AP_SKINS = [
   @keyframes ap-fly{from{transform:translateX(-60vw) rotate(-12deg);opacity:0}70%{transform:translateX(12px) rotate(3deg);opacity:1}to{transform:none}}
   @keyframes ap-rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 
+  /* --- duyarli yerlesim ---
+     Guvenli alan tek kaynaktan: --sa-* (test icin :root'ta ezilebilir). */
+  :root{--sa-t:env(safe-area-inset-top,0px);--sa-b:env(safe-area-inset-bottom,0px);
+    --sa-l:env(safe-area-inset-left,0px);--sa-r:env(safe-area-inset-right,0px)}
+  html,body,#root{height:100%;overflow:hidden;overscroll-behavior:none}
+  /* 100vh mobil tarayicida adres cubugunu sayar; dvh gorunur alani verir */
+  .h-screen{height:100vh;height:100dvh}
+  /* Pencereler (oyun sonu, hangar, ayarlar, sirket): sigarsa ortada, sigmazsa ustten baslayip kayar.
+     Eskiden ortalanmis icerik iki uctan birden tasiyordu. */
+  #root .absolute.inset-0.flex.items-center.justify-center{align-items:flex-start;overflow-y:auto;overscroll-behavior:contain;
+    -webkit-overflow-scrolling:touch;padding:max(12px,calc(var(--sa-t) + 8px)) max(12px,var(--sa-r)) max(12px,calc(var(--sa-b) + 8px)) max(12px,var(--sa-l))}
+  #root .absolute.inset-0.flex.items-center.justify-center>*{margin-top:auto;margin-bottom:auto;flex-shrink:0}
+  /* ic kaydirmali kartlar (hangar, sirket) gorunur yuksekligi asmasin */
+  #root .max-h-\\[90vh\\]{max-height:calc(100dvh - var(--sa-t) - var(--sa-b) - 24px)}
+  #ap-menu{padding-left:max(1.5rem,var(--sa-l));padding-right:max(1.5rem,var(--sa-r))}
+  #ap-over-level{font-family:Rajdhani,system-ui,sans-serif;font-size:14px;color:#c9c2ea;text-align:center}
+  #ap-over-level b{font-family:Orbitron,system-ui,sans-serif;font-size:12px;letter-spacing:.12em;color:#9ad8ff}
+
   /* kartsiz: logo gizlendigi icin bos kalan sol ust kose; centik/Dynamic Island payi */
-  #ap-level{position:fixed;z-index:60;left:max(16px,env(safe-area-inset-left));top:max(16px,env(safe-area-inset-top));pointer-events:none;
+  #ap-level{position:fixed;z-index:60;left:max(16px,var(--sa-l));top:max(16px,var(--sa-t));pointer-events:none;
     min-width:150px;max-width:60vw;font-family:Rajdhani,system-ui,sans-serif;color:#eef;text-align:left;text-shadow:0 1px 6px #1d1833;transition:opacity .3s}
   #ap-level[hidden]{display:none}
   #ap-level b{font-family:Orbitron,system-ui,sans-serif;font-size:13px;letter-spacing:.14em;color:#9ad8ff}
@@ -131,10 +149,63 @@ window.AP_SKINS = [
     } else if (state === 'GAMEOVER') {
       const record = current > best;
       if (record) { best = current; try { localStorage.setItem('ap-best-level', best); } catch {} }
-      pill.innerHTML = `<b>ULAŞILAN: BÖLÜM ${current}</b><span>${record ? 'Yeni bölüm rekoru!' : `Rekor: Bölüm ${best}`}</span>`;
-      pill.hidden = false;
+      // Ozet artik kartin icinde: kose yazisi kucuk ekranda kartin ustune biniyordu.
+      pill.hidden = true;
+      const html = `<b>ULAŞILAN: BÖLÜM ${current}</b> · ${record ? 'Yeni bölüm rekoru!' : `Rekor: Bölüm ${best}`}`;
+      const put = (tries) => {
+        const card = document.getElementById('game-over-modal');
+        if (!card) { if (tries) requestAnimationFrame(() => put(tries - 1)); return; }
+        let row = card.querySelector('#ap-over-level');
+        if (!row) { row = document.createElement('div'); row.id = 'ap-over-level'; card.prepend(row); }
+        row.innerHTML = html;
+        fit();
+      };
+      put(30);
     } else {
       pill.hidden = true;
     }
   });
+
+  // --- guvenli alan + orantili olcekleme ---
+  // CSS degiskenlerini piksele cevirir (env() JS'ten dogrudan okunamaz).
+  const probe = document.createElement('div');
+  probe.style.cssText = 'position:fixed;visibility:hidden;pointer-events:none;padding:var(--sa-t) 0 var(--sa-b) 0';
+  document.body.append(probe);
+  const MIN_ZOOM = 0.65; // daha kucugu okunmaz; o noktadan sonra kaydirma devreye girer
+
+  // Icerik yuksekligi alani asiyorsa elemanlari orantili kucult.
+  const zoomToFit = (els, avail) => {
+    els.forEach((el) => { el.style.zoom = ''; });
+    const need = els.reduce((h, el) => h + el.getBoundingClientRect().height, 0);
+    const z = need > avail ? Math.max(MIN_ZOOM, avail / need) : 1;
+    els.forEach((el) => { el.style.zoom = z === 1 ? '' : String(z); });
+  };
+
+  function fit() {
+    const cs = getComputedStyle(probe);
+    window.__apTop = Math.max(30, parseFloat(cs.paddingTop) + 8);
+    window.__apBottom = Math.max(24, parseFloat(cs.paddingBottom) + 8);
+
+    const menu = document.getElementById('ap-menu');
+    if (menu) {
+      const p = getComputedStyle(menu);
+      const avail = menu.clientHeight - parseFloat(p.paddingTop) - parseFloat(p.paddingBottom) - 24; // ogeler arasi en az bosluk
+      zoomToFit([...menu.children], avail);
+    }
+    for (const id of ['game-over-modal', 'settings-modal']) { // ic kaydirmasi olmayan kartlar
+      const card = document.getElementById(id);
+      if (!card) continue;
+      const box = card.parentElement, p = getComputedStyle(box);
+      zoomToFit([card], box.clientHeight - parseFloat(p.paddingTop) - parseFloat(p.paddingBottom));
+    }
+  }
+
+  let queued = false;
+  const schedule = () => { if (!queued) { queued = true; requestAnimationFrame(() => { queued = false; fit(); }); } };
+  addEventListener('resize', schedule);
+  addEventListener('orientationchange', schedule);
+  addEventListener('load', schedule);
+  // ekran degisimleri (menu, pencereler) React tarafindan DOM'a eklenir
+  new MutationObserver(schedule).observe(document.getElementById('root'), { childList: true, subtree: true });
+  fit();
 })();
