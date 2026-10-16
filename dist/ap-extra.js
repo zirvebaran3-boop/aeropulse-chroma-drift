@@ -59,14 +59,13 @@ window.AP_SKINS = [
   @keyframes ap-fly{from{transform:translateX(-60vw) rotate(-12deg);opacity:0}70%{transform:translateX(12px) rotate(3deg);opacity:1}to{transform:none}}
   @keyframes ap-rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 
-  #ap-level{position:fixed;z-index:60;left:50%;top:max(14px,env(safe-area-inset-top));transform:translateX(-50%);pointer-events:none;
-    min-width:190px;padding:7px 14px 9px;border-radius:14px;background:rgba(36,30,60,.78);border:1px solid #9ad8ff44;
-    font-family:Rajdhani,system-ui,sans-serif;color:#eef;text-align:center;backdrop-filter:blur(6px);transition:opacity .3s}
+  /* kartsiz: logo gizlendigi icin bos kalan sol ust kose; centik/Dynamic Island payi */
+  #ap-level{position:fixed;z-index:60;left:max(16px,env(safe-area-inset-left));top:max(16px,env(safe-area-inset-top));pointer-events:none;
+    width:150px;font-family:Rajdhani,system-ui,sans-serif;color:#eef;text-align:left;text-shadow:0 1px 6px #1d1833;transition:opacity .3s}
   #ap-level[hidden]{display:none}
-  @media (max-width:640px){#ap-level{top:calc(max(14px,env(safe-area-inset-top)) + 96px);min-width:170px;padding:5px 12px 7px}}
   #ap-level b{font-family:Orbitron,system-ui,sans-serif;font-size:13px;letter-spacing:.14em;color:#9ad8ff}
-  #ap-level span{display:block;font-size:12px;color:#c9c2ea;margin-top:2px}
-  #ap-level i{display:block;height:4px;margin-top:6px;border-radius:4px;background:#ffffff1a;overflow:hidden}
+  #ap-level span{display:block;font-size:12px;color:#c9c2ea;margin-top:1px}
+  #ap-level i{display:block;height:3px;margin-top:5px;border-radius:3px;background:#ffffff1a;overflow:hidden}
   #ap-level i::after{content:"";display:block;height:100%;width:var(--p,0%);background:linear-gradient(90deg,#9ad8ff,#d4b8ff,#ff9bb8);transition:width .25s}
 
   #ap-banner{position:fixed;z-index:61;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;
