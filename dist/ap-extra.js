@@ -64,6 +64,9 @@ window.AP_SKINS = [
   :root{--sa-t:env(safe-area-inset-top,0px);--sa-b:env(safe-area-inset-bottom,0px);
     --sa-l:env(safe-area-inset-left,0px);--sa-r:env(safe-area-inset-right,0px)}
   html,body,#root{height:100%;overflow:hidden;overscroll-behavior:none}
+  /* Paketin CSS'i body'ye env(safe-area-*) dolgusu veriyor; icindeki 100dvh oyun alani bu yuzden
+     iPhone'da ust pay kadar asagi kayip altta kesiliyordu. Paylari --sa-* ile ogeler kendisi ekliyor. */
+  body{padding:0!important}
   /* 100vh mobil tarayicida adres cubugunu sayar; dvh gorunur alani verir */
   .h-screen{height:100vh;height:100dvh}
   /* Pencereler (oyun sonu, hangar, ayarlar, sirket): sigarsa ortada, sigmazsa ustten baslayip kayar.
